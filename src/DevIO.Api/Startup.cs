@@ -36,20 +36,20 @@ namespace DevIO.Api
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+                       
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevIO.Api", Version = "v1" });
+            });
 
             services.AddCors(options =>
             {
                 options.AddPolicy("Development",
                     builder => builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()                    
+                    .AllowAnyHeader()
                     //.AllowCredentials()
                     );
-            });
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevIO.Api", Version = "v1" });
             });
         }
 
@@ -63,13 +63,10 @@ namespace DevIO.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevIO.Api v1"));
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
             app.UseCors("Development");
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseAuthorization();            
 
             app.UseEndpoints(endpoints =>
             {
