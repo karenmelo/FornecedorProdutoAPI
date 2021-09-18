@@ -2,6 +2,7 @@
 using DevIO.Api.DTO;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,31 @@ namespace DevIO.Api.Controllers
             return CustomResponse(produtoDTO);
         }
 
+        [HttpPost("Adicionar")]
+        public async Task<ActionResult<ProdutoDTO>> AdicionarAlternativo(ProdutoImagemDTO produtoImagemDTO)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var imgPrefixo = Guid.NewGuid() + "_";
+
+            if (!await UploadArquivoAlternativo(produtoImagemDTO.ImagemUpload, imgPrefixo))
+            {
+                return CustomResponse();
+            }
+
+            produtoImagemDTO.Imagem = imgPrefixo + produtoImagemDTO.ImagemUpload.FileName;
+            await _produtoService.Adicionar(_mapper.Map<Produto>(produtoImagemDTO));
+
+            return CustomResponse(produtoImagemDTO);
+        }
+
+
+        [HttpPost("imagem")]
+        public async Task<ActionResult>  AdicionarImagem(IFormFile file)
+        {
+            return Ok(file);
+        }
+
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoDTO>> Excluir(Guid id)
         {
@@ -97,6 +123,32 @@ namespace DevIO.Api.Controllers
             }
 
             System.IO.File.WriteAllBytes(filePath, imagemDataByteArray);
+            return true;
+        }
+
+        private async Task<bool> UploadArquivoAlternativo(IFormFile arquivo, string imgPrefixo)
+        {
+            if (arquivo == null || arquivo.Length == 0)
+            {
+                //ModelState.AddModelError(string.Empty, "Forneça uma imagem para este produto!");
+                NotificarErro("Forneça uma imagem para este produto!");
+                return false;
+            }
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/app/demo-webapi/src/assests/", imgPrefixo + arquivo.FileName);
+
+            if (System.IO.File.Exists(path))
+            {
+                //ModelState.AddModelError(string.Empty, "Já existe um aquivo com este nome!");
+                NotificarErro("Já existe um aquivo com este nome!");
+                return false;
+            }
+
+            using(var stream = new FileStream(path, FileMode.Create))
+            {
+                await arquivo.CopyToAsync(stream);
+            } 
+                   
             return true;
         }
     }
