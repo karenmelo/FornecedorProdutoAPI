@@ -80,7 +80,8 @@ namespace DevIO.Api.Controllers
             return CustomResponse(produtoImagemDTO);
         }
 
-
+        //[DisableRequestSizeLimit]
+        [RequestSizeLimit(30000000)]
         [HttpPost("imagem")]
         public async Task<ActionResult>  AdicionarImagem(IFormFile file)
         {
