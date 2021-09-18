@@ -83,7 +83,7 @@ namespace DevIO.Api.Controllers
         //[DisableRequestSizeLimit]
         [RequestSizeLimit(30000000)]
         [HttpPost("imagem")]
-        public async Task<ActionResult>  AdicionarImagem(IFormFile file)
+        public async Task<ActionResult> AdicionarImagem(IFormFile file)
         {
             return Ok(file);
         }
@@ -97,6 +97,36 @@ namespace DevIO.Api.Controllers
             return CustomResponse(produto);
         }
 
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult> Atualizar(Guid id, ProdutoDTO produtoDTO)
+        {
+            if (id != produtoDTO.Id) return NotFound();
+
+            var produtoAtualização = await ObterProdutoPorId(id);
+            produtoDTO.Imagem = produtoAtualização.Imagem;
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            if (produtoDTO.ImagemUpload != null)
+            {
+                var imagemNome = Guid.NewGuid() + "_" + produtoDTO.Imagem;
+                if (!UploadArquivo(produtoDTO.ImagemUpload, imagemNome))
+                {
+                    return CustomResponse(ModelState);
+                }
+
+                produtoAtualização.Imagem = imagemNome;
+            }
+
+            produtoAtualização.Nome = produtoDTO.Nome;
+            produtoAtualização.Descricao = produtoDTO.Descricao;
+            produtoAtualização.Valor = produtoDTO.Valor;
+            produtoAtualização.Ativo = produtoDTO.Ativo;
+
+            await _produtoRepository.Atualizar(_mapper.Map<Produto>(produtoAtualização));
+            return CustomResponse(produtoDTO);
+
+        }
+              
 
         private async Task<ProdutoDTO> ObterProdutoPorId(Guid id)
         {
@@ -145,11 +175,11 @@ namespace DevIO.Api.Controllers
                 return false;
             }
 
-            using(var stream = new FileStream(path, FileMode.Create))
+            using (var stream = new FileStream(path, FileMode.Create))
             {
                 await arquivo.CopyToAsync(stream);
-            } 
-                   
+            }
+
             return true;
         }
     }
