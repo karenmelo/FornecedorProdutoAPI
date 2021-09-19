@@ -5,14 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\app\**" />
     <Compile Remove="wwwroot\imagens\**" />
+    <Content Remove="wwwroot\app\**" />
     <Content Remove="wwwroot\imagens\**" />
+    <EmbeddedResource Remove="wwwroot\app\**" />
     <EmbeddedResource Remove="wwwroot\imagens\**" />
+    <None Remove="wwwroot\app\**" />
     <None Remove="wwwroot\imagens\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
@@ -31,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\app\demo-webapi\src\assests\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

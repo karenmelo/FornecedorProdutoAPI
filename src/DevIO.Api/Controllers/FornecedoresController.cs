@@ -1,16 +1,16 @@
-﻿
-using AutoMapper;
-using DevIO.Api.Controllers;
+﻿using AutoMapper;
 using DevIO.Api.DTO;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DevIO.Api.V1.Controllers
+namespace DevIO.Api.Controllers
 {
+    [Authorize]
     [Route("api/fornecedores")]
      public class FornecedoresController : MainController
     {
@@ -32,7 +32,7 @@ namespace DevIO.Api.V1.Controllers
             _enderecoRepository = enderecoRepository;
         }
 
-        
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<FornecedorDTO>> ObterTodos()
         {
