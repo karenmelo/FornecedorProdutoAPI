@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DevIO.Api.DTO;
+using DevIO.Api.Extensions;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -49,7 +50,7 @@ namespace DevIO.Api.Controllers
             return fornecedor;
         }
 
-       
+       [ClaimsAuthorize("Fonecedor", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<FornecedorDTO>> Adicionar(FornecedorDTO FornecedorDTO)
         {
@@ -60,7 +61,7 @@ namespace DevIO.Api.Controllers
             return CustomResponse(FornecedorDTO);
         }
 
-       
+        [ClaimsAuthorize("Fonecedor", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<FornecedorDTO>> Atualizar(Guid id, FornecedorDTO FornecedorDTO)
         {
@@ -77,7 +78,7 @@ namespace DevIO.Api.Controllers
             return CustomResponse(FornecedorDTO);
         }
 
-       
+        [ClaimsAuthorize("Fonecedor", "Excluir")]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<FornecedorDTO>> Excluir(Guid id)
         {
@@ -95,7 +96,8 @@ namespace DevIO.Api.Controllers
         {
             return _mapper.Map<EnderecoDTO>(await _enderecoRepository.ObterPorId(id));
         }
-              
+
+        [ClaimsAuthorize("Fonecedor", "Atualizar")]
         [HttpPut("endereco/{id:guid}")]
         public async Task<IActionResult> AtualizarEndereco(Guid id, EnderecoDTO EnderecoDTO)
         {
