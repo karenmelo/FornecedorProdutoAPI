@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace DevIO.Api
+namespace DevIO.Api.Extensions
 {
     public class AspNetUser : IUser
     {
@@ -18,6 +18,7 @@ namespace DevIO.Api
         }
 
         public string Name => _accessor.HttpContext.User.Identity.Name;
+
 
         public Guid GetUserId()
         {
@@ -49,7 +50,7 @@ namespace DevIO.Api
     {
         public static string GetUserId(this ClaimsPrincipal principal)
         {
-            if (principal == null)
+            if(principal == null)
             {
                 throw new ArgumentException(nameof(principal));
             }

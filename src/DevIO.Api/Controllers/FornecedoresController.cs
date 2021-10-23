@@ -13,7 +13,7 @@ namespace DevIO.Api.Controllers
 {
     [Authorize]
     [Route("api/fornecedores")]
-     public class FornecedoresController : MainController
+    public class FornecedoresController : MainController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
         private readonly IFornecedorService _fornecedorService;
@@ -25,7 +25,7 @@ namespace DevIO.Api.Controllers
                                       IFornecedorService fornecedorService,
                                       INotificador notificador,
                                       IEnderecoRepository enderecoRepository,
-                                      IUser user) : base(notificador)
+                                      IUser user) : base(notificador, user)
         {
             _fornecedorRepository = fornecedorRepository;
             _mapper = mapper;
@@ -50,7 +50,7 @@ namespace DevIO.Api.Controllers
             return fornecedor;
         }
 
-       [ClaimsAuthorize("Fonecedor", "Adicionar")]
+        [ClaimsAuthorize("Fonecedor", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<FornecedorDTO>> Adicionar(FornecedorDTO FornecedorDTO)
         {

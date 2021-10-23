@@ -14,10 +14,15 @@ namespace DevIO.Api.Controllers
         ///validação da operação de negócios
 
         private readonly INotificador _notificador;
+        public readonly IUser AppUser;
 
-        public MainController(INotificador notificador)
+
+        public MainController(INotificador notificador, IUser appUser)
         {
             _notificador = notificador;
+            AppUser = appUser;
+
+
         }
 
         protected bool OperacaoValida()
