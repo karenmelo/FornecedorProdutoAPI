@@ -27,7 +27,7 @@ namespace DevIO.Api.Controllers
             AppUser = appUser;
 
             //sugestão, mas caso não seja necessário não precisa
-            if(appUser.IsAuthenticated())
+            if (appUser.IsAuthenticated())
             {
                 UsuarioId = appUser.GetUserId();
                 UsuarioAutenticado = true;

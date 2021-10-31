@@ -13,6 +13,23 @@ namespace DevIO.Api.Configuration
     {
         public static IServiceCollection WebApiConfig(this IServiceCollection services)
         {
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //Configurando o versionamento da api
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+            });
+
+            //Configuração de formato de nome e substituição de versão na url
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -27,7 +44,7 @@ namespace DevIO.Api.Configuration
                             .AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader()
-                            //.AllowCredentials()
+                    //.AllowCredentials()
                     );
 
                 //options.AddDefaultPolicy(

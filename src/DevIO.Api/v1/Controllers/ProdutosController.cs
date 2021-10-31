@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DevIO.Api.Controllers;
 using DevIO.Api.DTO;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
@@ -9,9 +10,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DevIO.Api.Controllers
+namespace DevIO.Api.v1.Controllers
 {
-    [Route("api/produtos")]
+    [ApiVersion("1.0")]
+    //o próprio .netcore já entende o 'apiVersion' e com a configuração de versionamento.
+    [Route("api/v{version:apiVersion}/produtos")]
     public class ProdutosController : MainController
     {
         private readonly IProdutoRepository _produtoRepository;
@@ -127,7 +130,7 @@ namespace DevIO.Api.Controllers
             return CustomResponse(produtoDTO);
 
         }
-              
+
 
         private async Task<ProdutoDTO> ObterProdutoPorId(Guid id)
         {
