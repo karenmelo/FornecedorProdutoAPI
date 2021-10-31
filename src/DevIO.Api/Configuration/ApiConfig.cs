@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,22 +18,44 @@ namespace DevIO.Api.Configuration
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-          
+
             services.AddCors(options =>
             {
                 options.AddPolicy("Development",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    //.AllowCredentials()
+                    builder =>
+                    builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            //.AllowCredentials()
                     );
+
+                //options.AddDefaultPolicy(
+                //    builder =>
+                //       builder
+                //           .AllowAnyOrigin()
+                //           .AllowAnyMethod()
+                //           .AllowAnyHeader()
+                //           .AllowCredentials()
+                //   );
+
+                options.AddPolicy("Production",
+                   builder =>
+                   builder
+                           .WithMethods("GET")
+                           .WithOrigins("http://desenvolvedor.io")
+                           .SetIsOriginAllowedToAllowWildcardSubdomains()
+                           //.WithHeaders(HeaderNames.ContentType, "x-custom-header")
+                           .AllowAnyHeader()
+                   );
             });
 
             return services;
         }
-        public static IApplicationBuilder UseMvcConfiguration(this IApplicationBuilder app) {
-
-            app.UseCors("Development");
+        public static IApplicationBuilder UseMvcConfiguration(this IApplicationBuilder app)
+        {
+            app.UseHttpsRedirection();
+            //app.UseCors("Development"); //com a configuração de 2 ambientes é necessário fazer a configuração diretamente na staturp
             app.UseHttpsRedirection();
 
             return app;

@@ -19,7 +19,6 @@ namespace DevIO.Api.Extensions
 
         public string Name => _accessor.HttpContext.User.Identity.Name;
 
-
         public Guid GetUserId()
         {
             return IsAuthenticated() ? Guid.Parse(_accessor.HttpContext.User.GetUserId()) : Guid.Empty;
