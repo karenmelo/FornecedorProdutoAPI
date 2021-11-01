@@ -14,10 +14,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DevIO.Api.v1.Controllers
-{
-    //[ApiVersion("2.0")]
+{    
     [ApiVersion("1.0")]
-    [Route("apiv{version:apiVersion}")]
+    [Route("api/v{version:apiVersion}")]
     public class AuthController : MainController
     {
         private readonly SignInManager<IdentityUser> _signInManager;

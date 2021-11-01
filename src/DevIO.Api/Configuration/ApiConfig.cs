@@ -13,7 +13,7 @@ namespace DevIO.Api.Configuration
     {
         public static IServiceCollection WebApiConfig(this IServiceCollection services)
         {
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             //Configurando o versionamento da api
             services.AddApiVersioning(options =>
@@ -40,12 +40,12 @@ namespace DevIO.Api.Configuration
             {
                 options.AddPolicy("Development",
                     builder =>
-                    builder
+                        builder
                             .AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader()
-                    //.AllowCredentials()
-                    );
+                            //.AllowCredentials()
+                            );
 
                 //options.AddDefaultPolicy(
                 //    builder =>
@@ -58,22 +58,27 @@ namespace DevIO.Api.Configuration
 
                 options.AddPolicy("Production",
                    builder =>
-                   builder
+                        builder
                            .WithMethods("GET")
                            .WithOrigins("http://desenvolvedor.io")
                            .SetIsOriginAllowedToAllowWildcardSubdomains()
                            //.WithHeaders(HeaderNames.ContentType, "x-custom-header")
-                           .AllowAnyHeader()
-                   );
+                           .AllowAnyHeader());
             });
 
             return services;
         }
         public static IApplicationBuilder UseMvcConfiguration(this IApplicationBuilder app)
         {
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseHttpsRedirection();
             //app.UseCors("Development"); //com a configuração de 2 ambientes é necessário fazer a configuração diretamente na staturp
-            app.UseHttpsRedirection();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             return app;
         }
