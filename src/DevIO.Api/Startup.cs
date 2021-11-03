@@ -20,7 +20,6 @@ namespace DevIO.Api
             Configuration = configuration;
         }
 
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -33,11 +32,11 @@ namespace DevIO.Api
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.WebApiConfig();
+            services.AddApiConfig();
             
-            services.AddControllers();
-           
             services.AddSwaggerConfig();
+
+            services.AddLoggingConfig(Configuration);
 
             services.ResolveDependencies();
         }
@@ -45,27 +44,11 @@ namespace DevIO.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseCors("Development");
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseCors("Production");
-                app.UseHsts(); //obriga a "conversar" com HTTPS              
-            }
-
-            app.UseAuthentication(); //precisa vir antes da configuração do MVC
-
-            app.UseMvcConfiguration();
+            app.UseApiConfig(env);
 
             app.UseSwaggerConfig(provider);
 
-
-            //app.UseRouting();
-            //app.UseAuthorization();            
-           
+            app.UseLoggingConfig();           
         }
     }
 }

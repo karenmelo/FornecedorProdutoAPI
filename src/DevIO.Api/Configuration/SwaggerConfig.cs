@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using System;
+using Microsoft.OpenApi.Any;
 
 namespace DevIO.Api.Configuration
 {
@@ -19,7 +20,7 @@ namespace DevIO.Api.Configuration
             services.AddSwaggerGen(c =>
             {
                 c.OperationFilter<SwaggerDefaultValues>();
-                                
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Insira o token JWT desta maneira: Bearer {seu token}",
@@ -98,30 +99,33 @@ namespace DevIO.Api.Configuration
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var apiDescription = context.ApiDescription;
-
-            operation.Deprecated = apiDescription.IsDeprecated();
-
             if (operation.Parameters == null)
             {
                 return;
             }
 
-            foreach (var parameter in operation.Parameters.OfType<OpenApiParameter>())
+            foreach (var parameter in operation.Parameters)
             {
-                var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
+                var description = context.ApiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
+                var routeInfo = description.RouteInfo;
+                operation.Deprecated = OpenApiOperation.DeprecatedDefault;
 
                 if (parameter.Description == null)
                 {
                     parameter.Description = description.ModelMetadata?.Description;
                 }
 
-                if (parameter.Schema.Default == null)
+                if (routeInfo == null)
                 {
-                    parameter.Schema.Default = (Microsoft.OpenApi.Any.IOpenApiAny)description.DefaultValue;
+                    continue;
                 }
 
-                parameter.Required |= description.IsRequired;
+                if (parameter.In != ParameterLocation.Path && parameter.Schema.Default == null)
+                {
+                    parameter.Schema.Default = new OpenApiString(routeInfo.DefaultValue.ToString());
+                }
+
+                parameter.Required |= !routeInfo.IsOptional;
             }
         }
     }
